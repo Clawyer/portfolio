@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Info {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName        String
+  lastName         String
+  role             String
+  profilePic       String
+  backgroundimgUrl String
+  backgroundInfo   String
+  phoneNumber      String
+  email            String
+  address          String
+  socials          Social[] @relation(fields: [socialIds], references: [id])
+  socialIds        String[] @db.ObjectId
+}
+
+model Social {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  url      String
+  infos    Info[]   @relation(fields: [infosIds], references: [id])
+  infosIds String[] @db.ObjectId
+}
+
+model Experience {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  companyImg      String
+  companyName     String
+  dateStarted     DateTime
+  dateEnded       DateTime
+  technologies    Skill[]
+  technologiesIds String[] @db.ObjectId
+  points          String[]
+}
+
+model Project {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  img             String
+  summary         String
+  technologies    Skill[]
+  technologiesIds String[] @db.ObjectId
+  link            String
+}
+
+model Skill {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  logo         String
+  Experience   Experience? @relation(fields: [experienceId], references: [id])
+  experienceId String?     @db.ObjectId
+  Project      Project?    @relation(fields: [projectId], references: [id])
+  projectId    String?     @db.ObjectId
+}
